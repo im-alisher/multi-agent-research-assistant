@@ -78,6 +78,16 @@ class ResearchState(TypedDict):
     # Concise LLM summaries keyed by the same sub-task keys as above.
     summarized_notes: dict[str, str]
 
+    # The sub-task currently being worked on. The Orchestrator sets this before
+    # handing the baton to the Search agent; later nodes in the loop read it to
+    # know which sub-task's data to process. Overwritten (not accumulated).
+    current_subtask: str
+
+    # Sub-tasks that have completed the full search -> summarise -> fact-check
+    # pipeline. Used by the Orchestrator's routing logic to know when a sub-task
+    # is finished and when all sub-tasks are done (i.e. time to route to Writer).
+    checked_subtasks: Annotated[list[str], operator.add]
+
     # Flags raised by the Fact-Checker when a summary seems unsupported,
     # exaggerated, or contradictory. Appended with operator.add.
     fact_check_flags: Annotated[list[str], operator.add]
