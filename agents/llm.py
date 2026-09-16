@@ -17,12 +17,20 @@ from __future__ import annotations
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 
-# The model identifier on Groq's free tier. "versatile" is Groq's label for a
-# model that handles both chat and tool/function calling well.
+# The model identifier on Groq's free tier.
 #
-# llama-3.3-70b is a strong, cheap open model; if a better free-tier model
-# becomes available, this is the only place that needs changing.
-MODEL_NAME = "llama-3.3-70b-versatile"
+# NOTE on selection (checked Sept 2026): Groq's previous
+# ``llama-3.3-70b-versatile`` no longer exists on the account this project uses.
+# The larger ``openai/gpt-oss-120b`` / ``openai/gpt-oss-20b`` models were
+# tested but fail Groq's enforced tool-calling for ``with_structured_output``
+# ("Tool choice is required, but model did not call a tool"), which the
+# Orchestrator and Fact-Checker depend on.
+#
+# ``qwen/qwen3.8-27b`` reliably supports both plain chat and tool-calling
+# structured output, so it is the current default. If a better free-tier model
+# that supports function calling becomes available, change it here — this is
+# the only place that needs editing.
+MODEL_NAME = "qwen/qwen3.8-27b"
 
 # Low temperature keeps decomposition/summarisation outputs factual-ish and
 # reproducible; the value is intentionally modest (not 0.0) so responses are
