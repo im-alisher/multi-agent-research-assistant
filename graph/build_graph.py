@@ -55,6 +55,7 @@ from agents.search_agent import make_search_node
 from agents.summarizer_agent import make_summarizer_node
 from agents.fact_checker_agent import make_fact_checker_node
 from agents.writer_agent import make_writer_node
+from graph.logger import wrap_for_logging
 
 
 def build_graph(
@@ -100,11 +101,13 @@ def build_graph(
     # ── Assemble the graph ───────────────────────────────────────────────────
     graph = StateGraph(ResearchState)
 
-    graph.add_node("orchestrator", orchestrator)
-    graph.add_node("search",       search)
-    graph.add_node("summarizer",   summarizer)
-    graph.add_node("fact_checker", fact_checker)
-    graph.add_node("writer",       writer)
+    # Every node is wrapped in the communication logger so each state
+    # transition is recorded to logs/agent_comm.log (see graph/logger.py).
+    graph.add_node("orchestrator", wrap_for_logging("orchestrator", orchestrator))
+    graph.add_node("search",       wrap_for_logging("search", search))
+    graph.add_node("summarizer",   wrap_for_logging("summarizer", summarizer))
+    graph.add_node("fact_checker", wrap_for_logging("fact_checker", fact_checker))
+    graph.add_node("writer",       wrap_for_logging("writer", writer))
 
     # ── Entry point ──────────────────────────────────────────────────────────
     graph.set_entry_point("orchestrator")
