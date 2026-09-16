@@ -73,10 +73,13 @@ class ResearchState(TypedDict):
 
     # Raw web results keyed by the sub-task they answer.
     # e.g. {"What is X?": [{"title": ..., "snippet": ..., "url": ...}, ...]}
-    raw_search_results: dict[str, list[SearchResult]]
+    # Reducer: ``operator.or_`` performs a dict merge, so each Search node run
+    # adds its sub-task's results WITHOUT clobbering earlier sub-tasks' results.
+    raw_search_results: Annotated[dict[str, list[SearchResult]], operator.or_]
 
     # Concise LLM summaries keyed by the same sub-task keys as above.
-    summarized_notes: dict[str, str]
+    # Merged across runs (dict union) for the same reason as raw results.
+    summarized_notes: Annotated[dict[str, str], operator.or_]
 
     # The sub-task currently being worked on. The Orchestrator sets this before
     # handing the baton to the Search agent; later nodes in the loop read it to
