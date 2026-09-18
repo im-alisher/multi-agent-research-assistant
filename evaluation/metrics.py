@@ -96,6 +96,13 @@ class RunMetrics:
     search_calls: int = 0
     """Total number of web searches issued during the run (one per node visit)."""
 
+    results_by_subtask: dict[str, int] = field(default_factory=dict)
+    """
+    How many raw search results each sub-task yielded, keyed by sub-task text.
+    Included so the report can show the result counts at a glance (and so the
+    scorer/report never needs the raw state again). A missing key means 0.
+    """
+
     subtasks_with_empty_results: list[str] = field(default_factory=list)
     """
     Sub-tasks for which the Search agent returned zero results. Retrieved from

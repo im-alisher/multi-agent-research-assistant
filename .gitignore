@@ -16,3 +16,4 @@ htmlcov/
 
 # Runtime artifacts
 logs/*.log
+reports/*.md

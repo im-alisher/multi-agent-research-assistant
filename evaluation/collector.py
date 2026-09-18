@@ -303,6 +303,7 @@ def collect(final_state: dict, log_entries: Sequence[LogEntry]) -> RunMetrics:
         1 for entry in log_entries
         if entry.agent == "search" and entry.kind == KIND_RECEIVED
     )
+    results_by_subtask = {st: len(raw.get(st) or []) for st in subtasks}
     empty_results = [st for st in subtasks if not raw.get(st)]
 
     # ── Summarizer ───────────────────────────────────────────────────────────
@@ -337,6 +338,7 @@ def collect(final_state: dict, log_entries: Sequence[LogEntry]) -> RunMetrics:
         orchestrator_subtask_count=len(subtasks),
         orchestrator_loop_terminated=loop_terminated,
         search_calls=search_calls,
+        results_by_subtask=results_by_subtask,
         subtasks_with_empty_results=empty_results,
         subtasks_summarized=summarized,
         summaries_not_condensed=not_condensed,
